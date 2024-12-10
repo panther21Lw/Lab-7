@@ -1,0 +1,66 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+interface Command << interface >> {
+  + execute(): void
+   id: int
+}
+class HttpGetCommand {
+  + HttpGetCommand(HttpGetOperation, String, int): 
+  - id: int
+  - url: String
+  + execute(): void
+   id: int
+   url: String
+}
+class HttpGetOperation {
+  + HttpGetOperation(): 
+  + processGetRequest(String): void
+}
+class HttpPostCommand {
+  + HttpPostCommand(HttpPostOperation, String, String, int): 
+  - id: int
+  - url: String
+  + execute(): void
+   id: int
+   url: String
+}
+class HttpPostOperation {
+  + HttpPostOperation(): 
+  + processPostRequest(String, String): void
+}
+class HttpRequestManager {
+  + HttpRequestManager(): 
+  + excludeRequest(int): void
+  + changePriority(int, int): void
+  + processRequest(): void
+  + addRequest(Command, int): void
+}
+class Main {
+  + Main(): 
+  + main(String[]): void
+}
+class PriorityCommand {
+  + PriorityCommand(Command, int): 
+  - command: Command
+  - priority: int
+   command: Command
+   priority: int
+}
+
+HttpGetCommand      -[#008200,dashed]-^  Command            
+HttpGetCommand     "1" *-[#595959,plain]-> "operation\n1" HttpGetOperation   
+HttpPostCommand     -[#008200,dashed]-^  Command            
+HttpPostCommand    "1" *-[#595959,plain]-> "operation\n1" HttpPostOperation  
+HttpRequestManager "1" *-[#595959,plain]-> "requests\n*" PriorityCommand    
+HttpRequestManager  -[#595959,dashed]->  PriorityCommand    : "«create»"
+Main                -[#595959,dashed]->  HttpGetCommand     : "«create»"
+Main                -[#595959,dashed]->  HttpGetOperation   : "«create»"
+Main                -[#595959,dashed]->  HttpPostCommand    : "«create»"
+Main                -[#595959,dashed]->  HttpPostOperation  : "«create»"
+Main                -[#595959,dashed]->  HttpRequestManager : "«create»"
+PriorityCommand    "1" *-[#595959,plain]-> "command\n1" Command            
+@enduml
